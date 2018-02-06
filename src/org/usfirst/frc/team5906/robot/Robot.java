@@ -30,11 +30,11 @@ import edu.wpi.first.*;
 public class Robot extends TimedRobot {
 	
 	RobotDrive myDrive;
-	Joystick mecstick=new Joystick(1);
-	final int kFrontLeftChannel=2;
-	final int kRearLeftChannel=3;
-	final int kFrontRightChannel=1;
-	final int kRearRightChannel=0;
+	Joystick mecstick=new Joystick(0);
+	final int kFrontLeftChannel=3;
+	final int kRearLeftChannel=4;
+	final int kFrontRightChannel=2;
+	final int kRearRightChannel=1;
 	
 	
 	
@@ -137,7 +137,11 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		myDrive.setSafetyEnabled(true);
 		while(isOperatorControl() && isEnabled()){
-			myDrive.mecanumDrive_Cartesian(mecstick.getX(), mecstick.getY(), mecstick.getZ(), 0);
+			double X = mecstick.getX();
+			double Y = mecstick.getY();
+			double Z = mecstick.getZ();
+			System.out.println("X is: " + X + " Y is: " + Y + " Z is: " + Z);
+			myDrive.mecanumDrive_Cartesian(X, Y, Z, 0);
 			Timer.delay(0.005);
 			Scheduler.getInstance().run();
 		}
