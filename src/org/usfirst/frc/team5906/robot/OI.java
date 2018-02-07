@@ -6,12 +6,20 @@
 /*----------------------------------------------------------------------------*/
 
 package org.usfirst.frc.team5906.robot;
+import org.usfirst.frc.*;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
+	static Joystick mecstick=new Joystick(0);
+	JoystickButton button1 = new JoystickButton(mecstick, 1),
+			button2 = new JoystickButton(mecstick, 2),
+			button3 = new JoystickButton(mecstick, 3);
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
 	//// joystick.

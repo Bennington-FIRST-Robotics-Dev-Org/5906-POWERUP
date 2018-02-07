@@ -7,8 +7,10 @@
 
 package org.usfirst.frc.team5906.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.RobotDrive.MotorType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -19,25 +21,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team5906.robot.commands.ExampleCommand;
 import org.usfirst.frc.team5906.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.*;
-
+import com.kauailabs.navx.frc.AHRS;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
- * documentation. If you change the name of this class or the package after
+ * documentation. If you change the name of this bclass or the package after
  * creating this project, you must also update the build.properties file in the
  * project.
  */
 public class Robot extends TimedRobot {
-	
 	RobotDrive myDrive;
-	Joystick mecstick=new Joystick(0);
 	final int kFrontLeftChannel=3;
 	final int kRearLeftChannel=4;
 	final int kFrontRightChannel=2;
 	final int kRearRightChannel=1;
-	
-	
-	
+	AHRS ahrs;
 	public static final ExampleSubsystem kExampleSubsystem
 			= new ExampleSubsystem();
 	public static OI m_oi;
@@ -55,6 +53,13 @@ public class Robot extends TimedRobot {
 		myDrive.setInvertedMotor(MotorType.kFrontLeft, true);
 		myDrive.setInvertedMotor(MotorType.kRearLeft, true);
 		myDrive.setExpiration(0.1);
+		try {
+			ahrs = new AHRS(SPI.Port.kMXP);
+		} catch (RuntimeException ex ) {
+			DriverStation.reportError("Error instantiating navX MVP: " + ex.getMessage(), true);
+			
+		}
+		
 	}
 	
 	
@@ -137,13 +142,14 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		myDrive.setSafetyEnabled(true);
 		while(isOperatorControl() && isEnabled()){
-			double X = mecstick.getX();
-			double Y = mecstick.getY();
-			double Z = mecstick.getZ();
+			double X = OI.mecstick.getX();
+			double Y = OI.mecstick.getY();
+			double Z = OI.mecstick.getZ();
 			System.out.println("X is: " + X + " Y is: " + Y + " Z is: " + Z);
 			myDrive.mecanumDrive_Cartesian(X, Y, Z, 0);
 			Timer.delay(0.005);
 			Scheduler.getInstance().run();
+		
 		}
 		
 	}
@@ -153,5 +159,6 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void testPeriodic() {
+		SmartDashboard.putBoolean("IMU_Connected", ahrs.isConnected());
 	}
 }
